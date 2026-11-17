@@ -145,7 +145,9 @@ def find_pages(pdf, hs):
 def main():
     work = os.path.join(os.path.dirname(os.path.abspath(__file__)), "toc_work")
     os.makedirs(work, exist_ok=True)
-    for f in FILES:
+    # Tham số: TL1 / TL2 để chỉ dựng một tài liệu (đầu vào toc_work/<tên>.src.docx là bản chưa điền mục lục)
+    files = [f for f in FILES if any(a in f for a in sys.argv[1:])] or FILES
+    for f in files:
         src = os.path.join(work, f + ".src.docx")
         if not os.path.exists(src):
             shutil.copy(os.path.join(DOCS, f + ".docx"), src)   # bản trước khi điền mục lục

@@ -55,9 +55,11 @@ def me(authorization: str = Header(None)):
 
 @app.get("/api/org/info")
 def org_info():
+    # MOCK_NETWORK=onpremise: AI Gateway trong mạng nội bộ (ảnh ứng dụng Android/Windows kết nối http://IP-nội-bộ)
+    onprem = os.environ.get("MOCK_NETWORK") == "onpremise"
     return {"status": "SUCCESS", "org_id": "AI-TECH", "org_name": "AI-TECH Center - Vanlang University", "org_url": "https://ai-tech.vlu.edu.vn",
             "location": "FITLAB-03", "workspace_url": "https://aiwork.is-tech.vn", "gateway_url": "https://aigate.is-tech.vn",
-            "network": "internet", "switch_enabled": True,
+            "network": "onpremise" if onprem else "internet", "switch_enabled": not onprem,
             "organizations": [
                 {"org_id": "AI-TECH", "org_name": "AI-TECH Center - Vanlang University", "workspace_url": "https://aiwork.is-tech.vn", "current": True},
                 {"org_id": "VLSC", "org_name": "Trường Cao đẳng Văn Lang Sài Gòn", "workspace_url": "https://vlsc.is-tech.vn", "current": False},
