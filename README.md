@@ -14,4 +14,4 @@ Tài liệu tham chiếu của iThunder AI OS. Repo này chỉ theo dõi thư m�
 | `nginx_de_xuat/` | Đề xuất thay đổi cấu hình nginx cho AI Gateway |
 | `mau_tich_hop/` | Mã mẫu MCP Server cho nhà cung cấp phần mềm (Phụ lục E của TL2) |
 
-Mục lục trong DOCX là trường Word: mở bằng Word, bấm Update Field rồi lưu lại PDF.
+Mục lục trong DOCX là trường Word đã điền sẵn kết quả (bookmark, liên kết, PAGEREF) bằng `screenshots/_tools/build_toc.py`, số trang lấy từ PDF do LibreOffice xuất. Nếu sửa tài liệu trong Word, bấm Update Field rồi lưu lại PDF.
