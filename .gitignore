@@ -1,0 +1,6 @@
+# Chỉ theo dõi aios-docs và README
+/*
+!/.gitignore
+!/README.md
+!/aios-docs/
+__pycache__/
