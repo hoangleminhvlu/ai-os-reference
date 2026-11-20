@@ -149,3 +149,51 @@ def last_shot_number(doc):
     import re
     nums = [int(m.group(1)) for e in doc.elements() for m in [re.match(r"Ảnh màn hình (\d+)\. ", doc.text_of(e))] if m]
     return max(nums)
+
+
+def insert_picture(doc, anchor, img_path, title, width_cm, caption_needle):
+    """Ảnh + chú thích "Ảnh màn hình 99. <title>" sau anchor, theo mẫu ảnh có chú thích caption_needle; chạy
+    renumber_shots sau khi chèn để đánh số theo thứ tự trong tài liệu."""
+    from docx.shared import Cm
+    cap_tpl = doc.find(caption_needle, "p")
+    pic_tpl = cap_tpl.getprevious()
+    p = doc.d.add_paragraph()
+    p.add_run().add_picture(img_path, width=Cm(width_cm))
+    el = p._p
+    old = el.find(qn("w:pPr"))
+    if old is not None:
+        el.remove(old)
+    el.insert(0, copy.deepcopy(pic_tpl.find(qn("w:pPr"))))
+    anchor.addnext(el)
+    cap = copy.deepcopy(cap_tpl)
+    runs = cap.findall(qn("w:r"))
+    runs[0].find(qn("w:t")).text = "Ảnh màn hình 99. "
+    runs[1].find(qn("w:t")).text = title
+    for r in runs[2:]:
+        cap.remove(r)
+    el.addnext(cap)
+    doc.changes.append(f"Thêm ảnh màn hình: {title[:60]}")
+    return cap
+
+
+def renumber_shots(doc):
+    """Đánh lại số "Ảnh màn hình N" theo thứ tự trong tài liệu và sửa chỗ dẫn chiếu trong câu. Trả {số cũ: số mới}."""
+    import re
+    mapping, n = {}, 0
+    for e in doc.elements():
+        if e.tag != qn("w:p"):
+            continue
+        runs = e.findall(qn("w:r"))
+        t0 = runs[0].find(qn("w:t")) if runs else None
+        m = re.fullmatch(r"Ảnh màn hình (\d+)\. ", t0.text or "") if t0 is not None else None
+        if m:
+            n += 1
+            mapping[m.group(1)] = n
+            t0.text = f"Ảnh màn hình {n}. "
+    for e in doc.elements():
+        for t in e.iter(qn("w:t")):
+            if t.text and "Ảnh màn hình" in t.text and not re.fullmatch(r"Ảnh màn hình \d+\. ", t.text):
+                t.text = re.sub(r"Ảnh màn hình (\d+)(?=[,) .])",
+                                lambda m: f"Ảnh màn hình {mapping.get(m.group(1), m.group(1))}", t.text)
+    doc.changes.append(f"Đánh lại số ảnh màn hình: {mapping}")
+    return mapping
