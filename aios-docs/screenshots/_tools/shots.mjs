@@ -7,7 +7,8 @@ const only = process.argv.slice(2);
 const b = await chromium.launch({ args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', '--use-file-for-fake-video-capture=/tmp/claude-1000/-home-local/4bd4dbda-ccf9-4e6b-a738-bbbc9b7bbfcc/scratchpad/shots2/face.y4m'] });
 async function page(ls, { w = 1440, h = 900, gw } = {}) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1.5, locale: 'vi-VN', timezoneId: 'Asia/Ho_Chi_Minh', permissions: ['camera'] });
-  await ctx.addInitScript((kv) => { if (!sessionStorage.getItem('_init')) { sessionStorage.setItem('_init', 1); for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v); } }, ls);
+  await ctx.addInitScript((kv) => { if (!sessionStorage.getItem('_init')) { sessionStorage.setItem('_init', 1); for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v);
+    if (!kv.shot_notice) sessionStorage.setItem('tara_web_notice', '1'); } }, ls);   // bỏ qua thông báo trước trang Đăng nhập, trừ ảnh tl1_15
   // AI Gateway hiển thị là aigate.is-tech.vn nhưng mọi yêu cầu được chuyển về máy giả lập cục bộ (không gọi máy chủ thật)
   if (gw) await ctx.route(gw + '/**', async (r) => { const q = r.request(); const res = await r.fetch({ url: q.url().replace(gw, BASE) }); await r.fulfill({ response: res }); });
   const p = await ctx.newPage();
@@ -18,6 +19,7 @@ const shot = (p, n) => p.screenshot({ path: OUT + n + '.png' });
 const S = { ...SESS };
 const jobs = {
   async tl1_01_login() { const p = await page({ shot_web: '1' }); await p.goto(BASE + '/'); await p.waitForTimeout(2500); await shot(p, 'tl1_01_login'); },
+  async tl1_15_web_notice() { const p = await page({ shot_web: '1', shot_notice: '1' }); await p.goto(BASE + '/'); await p.waitForTimeout(2500); await shot(p, 'tl1_15_web_notice'); },
   async tl1_02_faceid() { const p = await page({ shot_web: '1', shot_view: 'FACEID' }); await p.goto(BASE + '/'); await p.waitForTimeout(3500); await shot(p, 'tl1_02_faceid'); },
   async tl1_03_workspace() { const p = await page(S); await p.goto(BASE + '/'); await p.waitForTimeout(2500); await shot(p, 'tl1_03_workspace'); },
   async tl1_04_public() {

@@ -19,7 +19,7 @@ DOCS = "/home/local/ai-reference/aios-docs"
 WIN_DIR = "/mnt/c/Users/Public/ithunder_shots/docs/toc"
 WIN_DIR_W = r"C:\Users\Public\ithunder_shots\docs\toc"
 SOFFICE = "/mnt/c/Program Files/LibreOffice/program/soffice.exe"
-NOTE = ("Mục lục cập nhật ngày 23/11/2026. Nếu sửa tài liệu trong Word, bấm chuột phải vào mục lục "
+NOTE = ("Mục lục cập nhật ngày 24/11/2026. Nếu sửa tài liệu trong Word, bấm chuột phải vào mục lục "
         "rồi chọn Update Field để cập nhật số trang.")
 FILES = ["iThunder_AI_OS_TL1_Huong_dan_su_dung_AI_Workspace", "iThunder_AI_OS_TL2_Cai_dat_va_Van_hanh_AI_Platform"]
 W = nsdecls("w")
